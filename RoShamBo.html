@@ -1,21 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RockPaperScissors</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<h1>Rock Paper Scissors!</h1>
-<p>
-    Choose your hand!
-</p>
-<button> <img src="images/rock.png" alt="Rock" class="rpsImage"> </button>
-<button> <img src="images/paper.png" alt="Paper" class="rpsImage"> </button>
-<button> <img src="images/scissors.png" alt="Scissors" class="rpsImage"> </button>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Rock Paper Scissors!</h1>
+    <p>Choose your hand!</p>
+    <button>
+      <img src="images/rock.png" alt="Rock" class="rpsImage" id="rockBtn" />
+    </button>
+    <button>
+      <img src="images/paper.png" alt="Paper" class="rpsImage" id="paperBtn" />
+    </button>
+    <button>
+      <img
+        src="images/scissors.png"
+        alt="Scissors"
+        class="rpsImage"
+        id="scissorsBtn"
+      />
+    </button>
     <script>
-        
+      document.getElementById("rockBtn").onclick = start;
+      document.getElementById("paperBtn").onclick = start;
+      document.getElementById("scissorsBtn").onclick = start;
+
+      let move = "";
+
+      // Function to generate the computers move
+
+      function start() {
+        const hand = Math.random() * 10;
+
+        if (hand < 3) {
+          move = "rock";
+        } else {
+          if (hand < 6) {
+            move = "paper";
+          } else {
+            move = "scissors";
+          }
+        }
+
+        console.log("Computer chose:", move);
+      }
+
+      function reset() {
+        move = "";
+        hand = 0;
+        console.log("reset");
+      }
+
+      // Generates a random number
+      // Assign numbers to hand
+
+      // Loading??
+
+      // Function to keep track and update the current score
+
+      // Cheat codes ?
     </script>
-</body>
+  </body>
 </html>
