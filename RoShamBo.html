@@ -9,7 +9,18 @@
   </head>
   <body>
     <h1>Rock Paper Scissors!</h1>
+
+    <label for="playerNameInput">Enter your name: </label>
+    <input type="text" id="playerNameInput" placeholder="Player 1" />
+    <button id="setNameBtn">Set Name</button>
+
+    <button id="resetBtn">Reset</button>
+
     <p>Choose your hand!</p>
+
+    <!-- Result shows here -->
+    <div id="resultDisplay"></div>
+
     <button>
       <img src="images/rock.png" alt="Rock" class="rpsImage" id="rockBtn" />
     </button>
@@ -24,36 +35,98 @@
         id="scissorsBtn"
       />
     </button>
+
+    <div id="scoreboard">
+      <p>
+        <span id="playerName">Player</span> Wins:
+        <span id="playerScore">0</span>
+      </p>
+      <p>Computer Wins: <span id="computerScore">0</span></p>
+      <p>Ties: <span id="tieScore">0</span></p>
+    </div>
+
     <script>
-      document.getElementById("rockBtn").onclick = start;
-      document.getElementById("paperBtn").onclick = start;
-      document.getElementById("scissorsBtn").onclick = start;
+      let playerScore = 0;
+      let computerScore = 0;
+      let tieScore = 0;
+
+      const player = {
+        name: "",
+        move(choice) {
+          play(choice);
+        },
+      };
+
+      const computer = {
+        name: "terminator",
+        move() {
+          const choices = ["Rock", "Paper", "Scissors"];
+          const calc = choices[Math.floor(Math.random() * 3)];
+          return calc;
+        },
+      };
+
+      let playerName = "Daniel";
+
+      // Handle name input
+      document.getElementById("setNameBtn").onclick = () => {
+        const input = document.getElementById("playerNameInput").value.trim();
+        if (input !== "") {
+          playerName = input;
+          document.getElementById("playerName").innerText = playerName;
+        }
+      };
+
+      document.getElementById("rockBtn").onclick = () => player.move("Rock");
+      document.getElementById("paperBtn").onclick = () => player.move("Paper");
+      document.getElementById("scissorsBtn").onclick = () =>
+        player.move("Scissors");
 
       let move = "";
 
-      // Function to generate the computers move
+      function play(playerChoice) {
+        const compChoice = computer.move();
+        let resultText = "";
 
-      function start() {
-        const hand = Math.random() * 10;
-
-        if (hand < 3) {
-          move = "rock";
+        if (playerChoice === compChoice) {
+          resultText = `It is a tie! Both chose ${playerChoice}`;
+          tieScore++;
         } else {
-          if (hand < 6) {
-            move = "paper";
+          if (
+            (playerChoice === "Rock" && compChoice === "Scissors") ||
+            (playerChoice === "Paper" && compChoice === "Rock") ||
+            (playerChoice === "Scissors" && compChoice === "Paper")
+          ) {
+            resultText = `Player wins! Computer chose ${compChoice}`;
+            playerScore++;
           } else {
-            move = "scissors";
+            resultText = `Computer wins! Computer chose ${compChoice}`;
+            computerScore++;
           }
         }
 
-        console.log("Computer chose:", move);
+        // Results Display
+        document.getElementById("resultDisplay").innerHTML = resultText;
+
+        // Scoreboard Display
+        document.getElementById("playerScore").innerHTML = playerScore;
+        document.getElementById("computerScore").innerHTML = computerScore;
+        document.getElementById("tieScore").innerText = tieScore;
       }
 
       function reset() {
-        move = "";
-        hand = 0;
-        console.log("reset");
+        playerScore = 0;
+        computerScore = 0;
+        tieScore = 0;
+
+        document.getElementById("resultDisplay").innerText = "";
+        document.getElementById("playerScore").innerText = "0";
+        document.getElementById("computerScore").innerText = "0";
+        document.getElementById("tieScore").innerText = "0";
       }
+      document.getElementById("resetBtn").onclick = reset;
+
+      function count() {}
 
       // Generates a random number
       // Assign numbers to hand
