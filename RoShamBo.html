@@ -4,30 +4,47 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RockPaperScissors</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="styles.css" />
+
+    <!-- Flavicon -->
     <link rel="icon" type="image/png" href="images/RPSFlav.png" />
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <h1>Rock Paper Scissors!</h1>
 
+    <!-- Top Layout -->
     <label for="playerNameInput">Enter your name: </label>
-    <input type="text" id="playerNameInput" placeholder="Player 1" />
-    <button id="setNameBtn">Set Name</button>
+    <input
+      type="text"
+      id="playerNameInput"
+      placeholder="Player 1"
+      class="namebox"
+    />
+    <button id="setNameBtn" class="buttons">Set Name</button>
 
-    <button id="resetBtn">Reset</button>
+    <button id="resetBtn" class="buttons">Reset</button>
 
     <p>Choose your hand!</p>
 
     <!-- Result shows here -->
     <div id="resultDisplay"></div>
 
-    <button>
+    <!-- Main RPS Buttons-->
+    <button class="rpsImage">
       <img src="images/rock.png" alt="Rock" class="rpsImage" id="rockBtn" />
     </button>
-    <button>
+    <button class="rpsImage">
       <img src="images/paper.png" alt="Paper" class="rpsImage" id="paperBtn" />
     </button>
-    <button>
+    <button class="rpsImage">
       <img
         src="images/scissors.png"
         alt="Scissors"
@@ -36,20 +53,31 @@
       />
     </button>
 
-    <div id="scoreboard">
-      <p>
-        <span id="playerName">Player</span> Wins:
-        <span id="playerScore">0</span>
-      </p>
-      <p>Computer Wins: <span id="computerScore">0</span></p>
-      <p>Ties: <span id="tieScore">0</span></p>
+    <!-- Animated Scoreboard-->
+    <div class="scoreboard">
+      <div class="score">👨‍🚀 Player: <span id="playerScore">0</span></div>
+      <div class="score">🤖 Computer: <span id="computerScore">0</span></div>
+      <div class="score">⚔️ Ties: <span id="tieScore">0</span></div>
+    </div>
+
+    <!-- Local Storage LeaderBoard -->
+    <div class="leaderboard">
+      <h2>
+        <div style="font-size: 2rem; margin-bottom: 5px">🚀</div>
+        Leaderboard
+      </h2>
+      <ul id="leaderboardList"></ul>
     </div>
 
     <script>
+      // Vars
       let playerScore = 0;
       let computerScore = 0;
       let tieScore = 0;
+      let playerName = "Daniel";
+      let move = "";
 
+      // Player obj
       const player = {
         name: "",
         move(choice) {
@@ -57,6 +85,7 @@
         },
       };
 
+      // Computer obj
       const computer = {
         name: "terminator",
         move() {
@@ -65,8 +94,6 @@
           return calc;
         },
       };
-
-      let playerName = "Daniel";
 
       // Handle name input
       document.getElementById("setNameBtn").onclick = () => {
@@ -77,17 +104,18 @@
         }
       };
 
+      // Clicking starts move
       document.getElementById("rockBtn").onclick = () => player.move("Rock");
       document.getElementById("paperBtn").onclick = () => player.move("Paper");
       document.getElementById("scissorsBtn").onclick = () =>
         player.move("Scissors");
 
-      let move = "";
-
+      // Main func
       function play(playerChoice) {
         const compChoice = computer.move();
         let resultText = "";
 
+        // Win logic
         if (playerChoice === compChoice) {
           resultText = `It is a tie! Both chose ${playerChoice}`;
           tieScore++;
@@ -112,8 +140,11 @@
         document.getElementById("playerScore").innerHTML = playerScore;
         document.getElementById("computerScore").innerHTML = computerScore;
         document.getElementById("tieScore").innerText = tieScore;
+
+        saveScore(playerName, playerScore);
       }
 
+      // Reset function
       function reset() {
         playerScore = 0;
         computerScore = 0;
@@ -126,16 +157,43 @@
       }
       document.getElementById("resetBtn").onclick = reset;
 
-      function count() {}
+      function saveScore(name, score) {
+        const leaderboard =
+          JSON.parse(localStorage.getItem("leaderboard")) || [];
 
-      // Generates a random number
-      // Assign numbers to hand
+        // Check if player already exists
+        const existing = leaderboard.find((entry) => entry.name === name);
+        if (existing) {
+          existing.score = Math.max(existing.score, score); // Keep highest score
+        } else {
+          leaderboard.push({ name, score });
+        }
 
-      // Loading??
+        // Sort and save top 5
+        leaderboard.sort((a, b) => b.score - a.score);
+        localStorage.setItem(
+          "leaderboard",
+          JSON.stringify(leaderboard.slice(0, 5))
+        );
 
-      // Function to keep track and update the current score
+        renderLeaderboard();
+      }
 
-      // Cheat codes
+      function renderLeaderboard() {
+        const leaderboard =
+          JSON.parse(localStorage.getItem("leaderboard")) || [];
+        const list = document.getElementById("leaderboardList");
+        list.innerHTML = "";
+
+        leaderboard.forEach((entry, index) => {
+          const li = document.createElement("li");
+          li.textContent = `#${index + 1} ${entry.name}: ${entry.score}`;
+          list.appendChild(li);
+        });
+      }
+
+      // Call this once on page load
+      renderLeaderboard();
     </script>
   </body>
 </html>
